@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Xunit.Sdk;
 
 namespace Microsoft.DotNet.Tools.Test.Utilities
 {
@@ -129,6 +132,9 @@ namespace Microsoft.DotNet.Tools.Test.Utilities
             };
 
             subject.Start();
+
+            var startInfo = System.Text.Json.JsonSerializer.Serialize(subject.StartInfo, subject.StartInfo.GetType(), new JsonSerializerOptions {WriteIndented = true});
+            Console.WriteLine($"{DateTime.UtcNow:s} Started process: {subject.Id} start info: \n{startInfo}");
 
             return taskCompletionSource.Task;
         }

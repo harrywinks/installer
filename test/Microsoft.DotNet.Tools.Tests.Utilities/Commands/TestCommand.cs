@@ -81,11 +81,15 @@ namespace Microsoft.DotNet.Tools.Test.Utilities
 
             var stdErr = new List<String>();
 
-            CurrentProcess = CreateProcess(executable, args); 
+            CurrentProcess = CreateProcess(executable, args);
+
+            Console.WriteLine($"{DateTime.UtcNow:s} Executing - {executable} {args} - {WorkingDirectoryInfo()}");
 
             CurrentProcess.ErrorDataReceived += (s, e) =>
             {
                 stdErr.Add(e.Data);
+
+                Console.WriteLine($"{DateTime.UtcNow:s} err:{CurrentProcess.Id} > {e.Data}");
 
                 var handler = ErrorDataReceived;
                 
@@ -98,6 +102,8 @@ namespace Microsoft.DotNet.Tools.Test.Utilities
             CurrentProcess.OutputDataReceived += (s, e) =>
             {
                 stdOut.Add(e.Data);
+
+                Console.WriteLine($"{DateTime.UtcNow:s} out:{CurrentProcess.Id} > {e.Data}");
 
                 var handler = OutputDataReceived;
                 
