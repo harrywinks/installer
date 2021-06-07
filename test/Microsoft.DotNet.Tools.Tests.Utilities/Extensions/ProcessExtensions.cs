@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Json;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit.Sdk;
@@ -133,7 +135,15 @@ namespace Microsoft.DotNet.Tools.Test.Utilities
 
             subject.Start();
 
-            var startInfo = System.Text.Json.JsonSerializer.Serialize(subject.StartInfo, subject.StartInfo.GetType(), new JsonSerializerOptions {WriteIndented = true});
+            var startInfo = new StringBuilder();
+            startInfo.AppendLine($"FileName: {subject.StartInfo.FileName}");
+            startInfo.AppendLine($"Arguments: {subject.StartInfo.Arguments}");
+            startInfo.AppendLine($"Environment: {string.Join(",", subject.StartInfo.Environment.Select(p => $"{{{p.Key}: '{p.Value}}}'").ToArray())}");
+            startInfo.AppendLine($"WorkingDirectory: {subject.StartInfo.WorkingDirectory}");
+            startInfo.AppendLine($"RedirectStandardOutput: {subject.StartInfo.RedirectStandardOutput}");
+            startInfo.AppendLine($"UseShellExecute: {subject.StartInfo.UseShellExecute}");
+            startInfo.AppendLine($"UserName: {subject.StartInfo.UserName}");
+
             Console.WriteLine($"{DateTime.UtcNow:s} Started process: {subject.Id} start info: \n{startInfo}");
 
             return taskCompletionSource.Task;
